@@ -1,0 +1,26 @@
+﻿@model List<Post>
+<h1>Posts</h1>
+<p>
+    <a asp-action="Create">Create new Post</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Content</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var post in Model)
+        {
+            <tr>
+                <td>@post.title</td>
+                <td>@post.text</td>
+                <td>@post.createdAt</td>
+                
+            </tr>
+        }
+    </tbody>
+</table>
