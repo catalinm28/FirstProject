@@ -14,7 +14,7 @@ string secretKey = builder.Configuration["JwtConfig:SecretKey"];
 builder.Services.AddScoped<IDbConnection>((sp) => new SqlConnection(connectionString));
 builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<UserRepository>();
-
+builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -25,11 +25,16 @@ builder.Services.AddAuthentication(options =>
     options.SaveToken = true;
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidIssuer = "https://localhost",
+        ValidAudience = "https://localhost",
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey))
     };
 });
+
+
 
 var app = builder.Build();
 
@@ -42,6 +47,12 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.None,
+    Secure = CookieSecurePolicy.Always, // Set this to Always for HTTPS
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

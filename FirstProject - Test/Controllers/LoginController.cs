@@ -1,4 +1,6 @@
 ﻿using FirstProject___Test.Repositories;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +35,14 @@ namespace FirstProject___Test.Controllers
                 return View();
             }
             var token = GenerateJwtToken(user.userToken);
+
+            Response.Cookies.Append("jwt", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(30)
+            });
             return RedirectToAction("Index", "Home");
         }
         private string GenerateJwtToken(Guid userToken)
@@ -44,7 +54,7 @@ namespace FirstProject___Test.Controllers
                 Subject = new ClaimsIdentity(new Claim[] {
                     new Claim(ClaimTypes.NameIdentifier, userToken.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(365),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
             };

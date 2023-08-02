@@ -1,0 +1,32 @@
+﻿@model FirstProject___Test.Models.Post
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title Add new post></title>
+    </head>
+    <body>
+        <div>
+            <h2>Add New Post</h2>
+        @using (Html.BeginForm("Add", "Post", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div>@Html.LabelFor(m=>m.title)
+                @Html.TextBoxFor(m=>m.title)
+            </div>
+            <div>@Html.LabelFor(m=>m.url)
+                 @Html.TextBoxFor(m=>m.url)
+            </div>
+            <div>@Html.LabelFor(m=>m.text)
+                @Html.TextAreaFor(m=>m.text, new{rows = 4})
+            </div>
+            <div>
+                <input type ="submit" value="Add Post"/>
+                </div>
+        }
+        </div>
+    </body>
+</html>
+
