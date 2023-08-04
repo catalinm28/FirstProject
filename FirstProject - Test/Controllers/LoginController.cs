@@ -40,7 +40,7 @@ namespace FirstProject___Test.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddMinutes(30)
             });
             return RedirectToAction("Index", "Home");
@@ -54,6 +54,8 @@ namespace FirstProject___Test.Controllers
                 Subject = new ClaimsIdentity(new Claim[] {
                     new Claim(ClaimTypes.NameIdentifier, userToken.ToString())
                 }),
+                Audience = "https://localhost",
+                Issuer = "https://localhost",
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)

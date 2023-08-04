@@ -1,5 +1,9 @@
+
 using FirstProject___Test.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -14,7 +18,7 @@ string secretKey = builder.Configuration["JwtConfig:SecretKey"];
 builder.Services.AddScoped<IDbConnection>((sp) => new SqlConnection(connectionString));
 builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<UserRepository>();
-builder.Services.AddAuthorization();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -33,7 +37,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey))
     };
 });
-
+builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
@@ -51,13 +55,22 @@ if (!app.Environment.IsDevelopment())
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.None,
-    Secure = CookieSecurePolicy.Always, // Set this to Always for HTTPS
+    //Secure = CookieSecurePolicy.Always,
 });
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.Use(async (context, next) =>
+{
+    var token = context.Request.Cookies["jwt"]; 
+    if (!string.IsNullOrEmpty(token))
+    {
+        context.Request.Headers.Add("Authorization", "Bearer " + token);
+    }
+    await next();
+});
 app.UseAuthentication();
 
 app.UseAuthorization();

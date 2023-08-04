@@ -1,0 +1,23 @@
+﻿@model FirstProject___Test.Models.Post
+
+<h2>Delete Post</h2>
+
+<p>Are you sure you want to delete the following post?</p>
+
+<div>
+    <strong>Title:</strong> @Model.title
+</div>
+
+<div>
+    <strong>Text:</strong> @Model.text
+</div>
+
+<div>
+    <strong>URL:</strong> @Model.url
+</div>
+
+@using (Html.BeginForm("Delete", "Post", new { postId = Model.postId }, FormMethod.Post))
+{
+    <input type="submit" value="Delete" />
+    <a asp-action="Index" asp-controller="Home">Cancel</a>
+}

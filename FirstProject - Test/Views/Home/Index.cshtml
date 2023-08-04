@@ -1,10 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using FirstProject___Test.Joins;
+@{
+    ViewData["Title"] = "Home";
+}
+@{
+    int postNumber = 1;
 }
 
 
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@model List<PostUserJoin>
+
+
+
+<ul>
+    @foreach (var post in Model)
+    {
+        <li>
+            @if (!string.IsNullOrEmpty(post.url))
+            {
+               <a href="@post.url">@postNumber.@post.title</a>
+            }
+            else
+            {
+                <span>@postNumber.@post.title</span>
+            }
+            
+            <br />
+            by @post.username posted @((DateTime.UtcNow - post.createdAt).Hours) hours ago @post.number_of_comments comments
+
+        </li>
+        
+            postNumber++;
+        @if (User.Identity.IsAuthenticated && post.userToken == ViewBag.CurrentUserToken)
+        {
+            
+            <a href="@Url.Action("Edit", "Post", new { id = post.postId })">Edit</a>
+            <a href="@Url.Action("Delete","Post", new{id = post.postId})">Delete</a>
+        }
+    }
+</ul>

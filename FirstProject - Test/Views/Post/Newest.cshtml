@@ -1,0 +1,36 @@
+﻿@using FirstProject___Test.Joins;
+@{
+    ViewData["Title"] = "Newest";
+}
+@{
+    int postNumber = 1;
+}
+
+
+
+@model List<PostUserJoin>
+
+
+
+<ul>
+    @foreach (var post in Model)
+    {
+        <li>
+            @if (!string.IsNullOrEmpty(post.url))
+            {
+                <a href="@post.url">@postNumber.@post.title</a>
+            }
+            else
+            {
+                <span>@postNumber.@post.title</span>
+            }
+
+            <br />
+            by @post.username posted @((DateTime.UtcNow - post.createdAt).Hours) hours ago
+
+        </li>
+
+        postNumber++;
+        
+    }
+</ul>

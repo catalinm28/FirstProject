@@ -1,0 +1,29 @@
+﻿@model FirstProject___Test.Models.Post
+
+<h2>Edit Post</h2>
+
+@using (Html.BeginForm("Edit", "Post", FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.postId)
+    @Html.HiddenFor(m => m.userToken)
+
+    <div>
+        <label for="title">Title</label>
+        @Html.TextBoxFor(m => m.title)
+    </div>
+
+    <div>
+        <label for="url">URL</label>
+        @Html.TextBoxFor(m => m.url)
+    </div>
+
+    <div>
+        <label for="text">Text</label>
+        @Html.TextAreaFor(m => m.text, new { rows = 4 })
+    </div>
+
+    <div>
+        <input type="submit" value="Save" />
+        <a asp-action="Index" asp-controller="Home">Cancel</a>
+    </div>
+}
