@@ -43,6 +43,13 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = "https://localhost",
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey))
     };
+}).AddCookie(options =>
+{
+    // Cookie authentication options
+    options.Cookie.Name = "jwt"; // Customize the cookie name
+    options.Cookie.HttpOnly = true; // Set HttpOnly attribute
+    options.Cookie.SameSite = SameSiteMode.Lax; // Set SameSite attribute
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 builder.Services.AddAuthorization();
 

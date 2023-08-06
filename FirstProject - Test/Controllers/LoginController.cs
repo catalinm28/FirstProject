@@ -1,6 +1,8 @@
 ﻿using FirstProjectRepository.Helpers;
 using FirstProjectRepository.Repository;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -47,6 +49,30 @@ namespace FirstProject___Test.Controllers
                 Expires = DateTime.UtcNow.AddMinutes(30)
             });
             return RedirectToAction("Index", "Home");
+        }
+
+        [Authorize]
+       
+        [HttpGet]
+        public IActionResult Logout()
+        {
+           
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> LogoutConfirmed()
+        {
+            
+            
+                // Clear the authentication cookies
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // Optionally, clear other cookies if needed
+                //Response.Cookies.Delete("jwt");
+
+                // Redirect to the home page or any other page after logout
+                return RedirectToAction("Index", "Home");
+            
         }
         private string GenerateJwtToken(Guid userToken)
         {
