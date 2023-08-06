@@ -1,5 +1,7 @@
 ﻿using FirstProject___Test.Models;
-using FirstProject___Test.Repositories;
+using FirstProjectRepository.DBModels;
+using FirstProjectRepository.Helpers;
+using FirstProjectRepository.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FirstProject___Test.Controllers
@@ -7,9 +9,11 @@ namespace FirstProject___Test.Controllers
     public class RegisterController : Controller
     {
         private readonly UserRepository _userRepository;
-        public RegisterController(UserRepository userRepository)
+        private readonly Crypt _crypt;
+        public RegisterController(UserRepository userRepository,Crypt crypt)
         {
             _userRepository = userRepository;
+            _crypt = crypt;
         }
         [HttpGet]
         public IActionResult SignUp()
@@ -36,7 +40,7 @@ namespace FirstProject___Test.Controllers
                     {
                         username = model.Username,
                         email = model.Email,
-                        password = _userRepository.ComputeHash(model.Password)
+                        password = _crypt.ComputeHash(model.Password)
                     };
                     _userRepository.InsertUser(newUser);
                     return RedirectToAction("Index","Login");

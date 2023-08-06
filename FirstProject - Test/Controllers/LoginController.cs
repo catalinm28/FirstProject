@@ -1,4 +1,5 @@
-﻿using FirstProject___Test.Repositories;
+﻿using FirstProjectRepository.Helpers;
+using FirstProjectRepository.Repository;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.DataProtection;
@@ -14,10 +15,12 @@ namespace FirstProject___Test.Controllers
     {
         private readonly UserRepository _userRepository;
         private readonly string _secretKey;
-        public LoginController(UserRepository userRepository)
+        private readonly Crypt _crypt;
+        public LoginController(UserRepository userRepository,Crypt crypt)
         {
             _userRepository = userRepository;
             _secretKey = "my - 32 - character - ultra - secure - and - ultra - long - secret";
+            _crypt = crypt;
         }
 
         [HttpGet]
@@ -65,9 +68,10 @@ namespace FirstProject___Test.Controllers
         }
         private bool VerifyPassword(string inputPassword, string storedHash)
         {
-            string inputHash = _userRepository.ComputeHash(inputPassword);
+            string inputHash = _crypt.ComputeHash(inputPassword);
             return storedHash == inputHash;
         }
+        
 
     }
 }

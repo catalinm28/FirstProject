@@ -1,6 +1,7 @@
-﻿using FirstProject___Test.Joins;
-using FirstProject___Test.Models;
-using FirstProject___Test.Repositories;
+﻿using FirstProject___Test.Models;
+using FirstProject___Test.ViewModels;
+using FirstProjectRepository.Repository;
+using FirstProjectRepository.UsefullModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -23,7 +24,25 @@ namespace FirstProject___Test.Controllers
 
         public IActionResult Index()
         {
-            List<PostUserJoin> posts = _postRepository.GetPostsWithUsername();
+            List<PostWithUsername> posts = _postRepository.GetPostsWithUsername();
+            List<PostsHomeView> postHomeViewList = new List<PostsHomeView>();
+            foreach(var p in posts)
+            {
+                var postHomeView = new PostsHomeView
+                {
+                    postId = p.postId,
+                    userToken = p.userToken,
+                    title = p.title,
+                    text = p.text,
+                    url = p.url,
+                    username = p.username,
+                    createdAt = p.createdAt,
+                    number_of_comments = p.number_of_comments,
+                    comments = p.comments
+                };
+
+                postHomeViewList.Add(postHomeView);
+            }
             if (User.Identity.IsAuthenticated)
             {
                 
@@ -32,7 +51,7 @@ namespace FirstProject___Test.Controllers
                 
                 ViewBag.CurrentUserToken = currentUserToken;
             }
-            return View(posts);
+            return View(postHomeViewList);
         }
 
         public IActionResult Privacy()

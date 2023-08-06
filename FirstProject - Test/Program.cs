@@ -1,5 +1,9 @@
 
-using FirstProject___Test.Repositories;
+
+
+
+using FirstProjectRepository.Helpers;
+using FirstProjectRepository.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,6 +22,9 @@ string secretKey = builder.Configuration["JwtConfig:SecretKey"];
 builder.Services.AddScoped<IDbConnection>((sp) => new SqlConnection(connectionString));
 builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<Crypt>();
+
+
 
 builder.Services.AddAuthentication(options =>
 {

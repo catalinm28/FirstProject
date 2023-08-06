@@ -1,11 +1,12 @@
-﻿using FirstProject___Test.Joins;
-using FirstProject___Test.Models;
-using FirstProject___Test.Repositories;
+﻿using FirstProject___Test.Models;
+using FirstProjectRepository.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FirstProjectRepository.DBModels;
 using System.Drawing;
 using System.Security.Claims;
+using FirstProjectRepository.UsefullModels;
 
 namespace FirstProject___Test.Controllers
 {
@@ -38,8 +39,8 @@ namespace FirstProject___Test.Controllers
             {
                 post.userToken = GetCurrentUserToken();
                 post.createdAt = DateTime.UtcNow;
+
                 
-               
                 _postRepository.InsertPost(post);
                 return RedirectToAction("Index", "Home");
             }
@@ -94,7 +95,7 @@ namespace FirstProject___Test.Controllers
         }
         public IActionResult Newest()
         {
-            List<PostUserJoin> posts = _postRepository.GetAllPostsSortedByDate();
+            List<PostWithUsername> posts = _postRepository.GetAllPostsSortedByDate();
             return View(posts);
         }
         [Authorize]
