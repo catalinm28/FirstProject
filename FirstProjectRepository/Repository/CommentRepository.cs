@@ -38,6 +38,11 @@ namespace FirstProjectRepository.Repository
         }
         public void InsertComment(Comment comment)
         {
+            if (comment.userToken == Guid.Empty)
+            {
+
+                comment.userToken = new Guid("1E2DD3E0-0947-4EBB-AB4B-88234500A08B");
+            }
             var parameters = new
             {
                 commentId = comment.commentId,

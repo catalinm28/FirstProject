@@ -135,6 +135,7 @@ namespace FirstProject___Test.Controllers
             var posts = _postRepository.GetPostByUserId(userToken);
             return View(posts);
         }
+        [AllowAnonymous]
         public IActionResult ViewPost(int id)
         {
             var postWithComments = _postRepository.GetPostAndComments(id);

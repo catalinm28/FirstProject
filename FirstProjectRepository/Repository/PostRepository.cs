@@ -101,18 +101,18 @@ namespace FirstProjectRepository.Repository
             var post = GetPostWithUsername(id);
             var comments = _commentRepository.GetPostWithCommentsAndReplies(id);
 
-            // Check if GetPostWithUsername returned null
+            
             if (post == null)
             {
-                // Handle the case when post is null (e.g., return null, throw an exception, or handle the error)
+                
                 return null;
             }
 
-            // Check if _commentRepository.GetPostWithCommentsAndReplies returned null
+            
             if (comments == null)
             {
-                // Handle the case when comments is null (e.g., return null, throw an exception, or handle the error)
-                return post; // Or return null, depending on your requirements
+                
+                return post; 
             }
 
             OrganizeCommentsAndReplies(comments);
@@ -130,7 +130,7 @@ namespace FirstProjectRepository.Repository
             {
                 if (comment.commentId.HasValue && commentsById.TryGetValue(comment.commentId.Value, out var parentComment))
                 {
-                    // If the comment has a parent, add it to the parent's replies list.
+                   
                     parentComment.replies.Add(comment);
                 }
             }

@@ -1,4 +1,6 @@
-﻿@using FirstProjectRepository.UsefullModels
+﻿
+@using FirstProjectRepository.UsefullModels
+@using FirstProject___Test.Helpful
 @model PostWithUsername
 
 <h2>@Model.title</h2>
@@ -33,7 +35,7 @@ else
                 }
                 @if (comment.createdAt != null)
                 {
-                    @((DateTime.UtcNow - comment.createdAt).Hours)
+                    @TimeHelper.TimeAgo(comment.createdAt)
                }
                 @if (!string.IsNullOrEmpty(comment.text))
                 {
@@ -52,7 +54,7 @@ else
                                 }
                                 @if (reply.createdAt != null)
                                 {
-                                    @((DateTime.UtcNow - reply.createdAt).Hours)
+                                    @TimeHelper.TimeAgo(reply.createdAt)
                                }
                                 @if (!string.IsNullOrEmpty(reply.text))
                                 {
