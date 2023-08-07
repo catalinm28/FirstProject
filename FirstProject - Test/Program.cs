@@ -22,6 +22,7 @@ string secretKey = builder.Configuration["JwtConfig:SecretKey"];
 builder.Services.AddScoped<IDbConnection>((sp) => new SqlConnection(connectionString));
 builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<CommentRepository>();
 builder.Services.AddScoped<Crypt>();
 
 

@@ -1,4 +1,5 @@
 ﻿@using FirstProjectRepository.UsefullModels;
+@using FirstProject___Test.Helpful;
 @{
     ViewData["Title"] = "Newest";
 }
@@ -26,7 +27,7 @@
             }
 
             <br />
-            by @post.username posted @((DateTime.UtcNow - post.createdAt).Hours) hours ago
+            by @post.username posted @TimeHelper.TimeAgo(post.createdAt) @post.number_of_comments comments
 
         </li>
 

@@ -65,13 +65,12 @@ namespace FirstProject___Test.Controllers
         {
             
             
-                // Clear the authentication cookies
+                
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Optionally, clear other cookies if needed
-                //Response.Cookies.Delete("jwt");
+              
 
-                // Redirect to the home page or any other page after logout
+                
                 return RedirectToAction("Index", "Home");
             
         }

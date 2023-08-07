@@ -1,0 +1,70 @@
+﻿@using FirstProjectRepository.UsefullModels
+@model PostWithUsername
+
+<h2>@Model.title</h2>
+<p>by @Model.username @((DateTime.UtcNow - Model.createdAt).Hours) hours ago @Model.number_of_comments comments</p>
+<p>@Model.text</p>
+@if (!string.IsNullOrEmpty(Model.url))
+{
+    <p>Link: <a href="@Model.url" target="_blank">@Model.url</a></p>
+}
+
+<h3>Add Comment</h3>
+<form method="post" asp-action="AddComment" asp-controller="Comment" asp-route-postId="@Model.postId">
+    <textarea name="commentText" rows="4" cols="50" required></textarea>
+    <br />
+    <button type="submit">Add Comment</button>
+</form>
+
+<h3>Comments</h3>
+@if (Model.comments == null || !Model.comments.Any())
+{
+    <p>No comments found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var comment in Model.comments)
+        {
+            <li>
+                @if (comment.username != null)
+                {
+                    <strong>@comment.username</strong>
+                }
+                @if (comment.createdAt != null)
+                {
+                    @((DateTime.UtcNow - comment.createdAt).Hours)
+               }
+                @if (!string.IsNullOrEmpty(comment.text))
+                {
+                    <p>@comment.text</p>
+                }
+                <a href="#">Reply</a>
+                @if (comment.replies != null && comment.replies.Any())
+                {
+                    <ul>
+                        @foreach (var reply in comment.replies)
+                        {
+                            <li>
+                                @if (reply.username != null)
+                                {
+                                    <strong>@reply.username</strong>
+                                }
+                                @if (reply.createdAt != null)
+                                {
+                                    @((DateTime.UtcNow - reply.createdAt).Hours)
+                               }
+                                @if (!string.IsNullOrEmpty(reply.text))
+                                {
+                                    <p>@reply.text</p>
+                                }
+                                <a href="#">Reply</a>
+                                <!-- Nested replies can be displayed here recursively if needed -->
+                            </li>
+                        }
+                    </ul>
+                }
+            </li>
+        }
+    </ul>
+}

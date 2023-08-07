@@ -19,8 +19,4 @@
     <ProjectReference Include="..\FirstProjectRepository\FirstProjectRepository.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpful\" />
-  </ItemGroup>
-
 </Project>

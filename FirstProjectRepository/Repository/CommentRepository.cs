@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FirstProjectRepository.DBModels;
+using FirstProjectRepository.UsefullModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -67,6 +68,13 @@ namespace FirstProjectRepository.Repository
             string procedureName = "DeleteComment";
             _connection.Execute(procedureName, parameters, commandType: CommandType.StoredProcedure);
         }
+        public List<CommentWithReplies> GetPostWithCommentsAndReplies(int postId)
+        {
+            string procedureName = "GetPostWithCommentsAndReplies";
+            var parameters = new { postId };
+            return _connection.Query<CommentWithReplies>(procedureName, parameters, commandType: CommandType.StoredProcedure).ToList();
 
+
+        }
     }
 }

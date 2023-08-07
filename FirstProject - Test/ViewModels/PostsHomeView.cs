@@ -1,4 +1,5 @@
 ﻿using FirstProjectRepository.DBModels;
+using FirstProjectRepository.UsefullModels;
 
 namespace FirstProject___Test.ViewModels
 {
@@ -13,6 +14,5 @@ namespace FirstProject___Test.ViewModels
         public DateTime createdAt { get; set; }
         public int number_of_comments { get; set; }
 
-        public IEnumerable<Comment> comments { get; set; }
-    }
+        public List<CommentWithReplies> comments { get; set; }   }
 }

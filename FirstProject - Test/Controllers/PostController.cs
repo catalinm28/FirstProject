@@ -14,11 +14,13 @@ namespace FirstProject___Test.Controllers
     {
         private readonly PostRepository _postRepository;
         private readonly UserRepository _userRepository;
+        //private readonly CommentRepository _commentRepository;
         
-        public PostController(PostRepository postRepository,UserRepository userRepository)
+        public PostController(PostRepository postRepository,UserRepository userRepository, CommentRepository commentRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
+            //_commentRepository = commentRepository;
         }
         [AllowAnonymous]
         public IActionResult Index()
@@ -132,6 +134,11 @@ namespace FirstProject___Test.Controllers
             var userToken = GetCurrentUserToken();
             var posts = _postRepository.GetPostByUserId(userToken);
             return View(posts);
+        }
+        public IActionResult ViewPost(int id)
+        {
+            var postWithComments = _postRepository.GetPostAndComments(id);
+            return View(postWithComments);
         }
         private Guid GetCurrentUserToken()
         {
