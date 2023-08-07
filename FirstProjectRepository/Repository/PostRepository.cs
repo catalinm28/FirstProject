@@ -29,11 +29,11 @@ namespace FirstProjectRepository.Repository
                 commandType: CommandType.StoredProcedure
             );
         }
-        public Post GetPostByUserId(int userToken)
+        public List<Post> GetPostByUserId(Guid userToken)
         {
             string procedureName = "GetPostByUserId";
             var parameters = new { userToken = userToken };
-            return _connection.QueryFirstOrDefault<Post>(procedureName, parameters, commandType: CommandType.StoredProcedure);
+            return _connection.Query<Post>(procedureName, parameters, commandType: CommandType.StoredProcedure).ToList();
         }
         public List<Post> GetAllPosts()
         {

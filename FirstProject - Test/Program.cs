@@ -45,10 +45,10 @@ builder.Services.AddAuthentication(options =>
     };
 }).AddCookie(options =>
 {
-    // Cookie authentication options
-    options.Cookie.Name = "jwt"; // Customize the cookie name
-    options.Cookie.HttpOnly = true; // Set HttpOnly attribute
-    options.Cookie.SameSite = SameSiteMode.Lax; // Set SameSite attribute
+   
+    options.Cookie.Name = "jwt"; 
+    options.Cookie.HttpOnly = true; 
+    options.Cookie.SameSite = SameSiteMode.Lax; 
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 builder.Services.AddAuthorization();

@@ -48,6 +48,7 @@ namespace FirstProject___Test.Controllers
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddMinutes(30)
             });
+
             return RedirectToAction("Index", "Home");
         }
 

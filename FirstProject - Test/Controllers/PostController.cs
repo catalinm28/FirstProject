@@ -125,6 +125,14 @@ namespace FirstProject___Test.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        [Authorize]
+        public IActionResult MyPosts()
+        {
+            var userToken = GetCurrentUserToken();
+            var posts = _postRepository.GetPostByUserId(userToken);
+            return View(posts);
+        }
         private Guid GetCurrentUserToken()
         {
             var claim = HttpContext.User.Claims;
