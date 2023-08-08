@@ -9,7 +9,7 @@ namespace FirstProjectRepository.DBModels
     public class Comment
     {
         public int id { get; set; }
-        public int? commentId { get; private set; }
+        public int? commentId { get; set; }
         public int postId { get; set; }
         public Guid userToken { get;  set; }
         public string text { get; set; }

@@ -115,25 +115,40 @@ namespace FirstProjectRepository.Repository
                 return post; 
             }
 
-            OrganizeCommentsAndReplies(comments);
+            comments =OrganizeCommentsAndReplies(comments);
             post.comments = comments;
             return post;
         }
 
-        private void OrganizeCommentsAndReplies(List<CommentWithReplies> comments)
+        private List<CommentWithReplies> OrganizeCommentsAndReplies(List<CommentWithReplies> comments)
         {
-
-            Dictionary<int, CommentWithReplies> commentsById = comments.ToDictionary(c => c.id);
-
+            Dictionary<int, CommentWithReplies> commentDictionary = new Dictionary<int, CommentWithReplies>();
+            List<CommentWithReplies> organizedComments = new List<CommentWithReplies>();
 
             foreach (var comment in comments)
             {
-                if (comment.commentId.HasValue && commentsById.TryGetValue(comment.commentId.Value, out var parentComment))
+                comment.replies = new List<CommentWithReplies>(); // Initialize replies list
+                commentDictionary[comment.id] = comment; // Store comment in dictionary
+
+                if (comment.commentId == null)
                 {
-                   
-                    parentComment.replies.Add(comment);
+                    organizedComments.Add(comment); // Add top-level comment
+                }
+                else
+                {
+                    if (commentDictionary.TryGetValue(comment.commentId.Value, out var parentComment))
+                    {
+                        parentComment.replies.Add(comment); // Add reply to parent's replies list
+                    }
+                    else
+                    {
+                        // Handle the case where parent comment is not found (optional)
+                    }
                 }
             }
+
+            return organizedComments;
         }
+
     }
 }

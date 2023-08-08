@@ -138,6 +138,7 @@ namespace FirstProject___Test.Controllers
         [AllowAnonymous]
         public IActionResult ViewPost(int id)
         {
+            ViewBag.CurrentUserToken = GetCurrentUserToken();
             var postWithComments = _postRepository.GetPostAndComments(id);
             return View(postWithComments);
         }
