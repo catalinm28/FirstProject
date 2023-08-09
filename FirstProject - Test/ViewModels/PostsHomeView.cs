@@ -14,5 +14,8 @@ namespace FirstProject___Test.ViewModels
         public DateTime createdAt { get; set; }
         public int number_of_comments { get; set; }
 
-        public List<CommentWithReplies> comments { get; set; }   }
+        public List<CommentWithReplies> comments { get; set; }   
+
+        public int upvotes { get; set; }
+    }
 }

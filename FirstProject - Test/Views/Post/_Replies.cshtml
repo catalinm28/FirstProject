@@ -14,20 +14,16 @@
     @if (!string.IsNullOrEmpty(Model.text))
     {
         <p>@Model.text</p>
-    }@if (User.Identity.IsAuthenticated && Model.userToken == ViewBag.CurrentUserToken)
+    }
+    <a href="@Url.Action("AddReply","Comment",new{postId = Model.postId, parentCommentId=Model.id})">Reply</a>
+    @if (User.Identity.IsAuthenticated && Model.userToken == ViewBag.CurrentUserToken)
     {
-
+       
         <a href="@Url.Action("EditComment", "Comment", new { commentId = Model.id })">Edit</a>
         <a href="@Url.Action("Delete", "Comment", new { commentId = Model.id })">Delete</a>
     }
    
-    <!-- Text box for replying -->
-    <form method="post" asp-action="AddReply" asp-controller="Comment">
-        <input type="hidden" name="postId" value="@Model.postId" />
-        <input type="hidden" name="parentCommentId" value="@Model.id" />
-        <textarea name="replyText" rows="4" cols="50" required></textarea>
-        <button type="submit">Reply</button>
-    </form>
+    
 
     @if (Model.replies != null && Model.replies.Any())
     {

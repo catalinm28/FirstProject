@@ -1,0 +1,16 @@
+﻿@using FirstProject___Test.ViewModels;
+@model AddReplyViewModel
+
+<h2>Add Reply</h2>
+
+<form method="post" asp-action="AddReply" asp-controller="Comment">
+    <input type="hidden" name="postId" value="@Model.postId" />
+    <input type="hidden" name="parentCommentId" value="@Model.parentCommentId" />
+
+    <div class="form-group">
+        <label for="replyText">Reply Text</label>
+        <textarea class="form-control" id="replyText" name="replyText" rows="4" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Reply</button>
+</form>

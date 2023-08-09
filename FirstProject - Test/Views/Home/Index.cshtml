@@ -13,32 +13,65 @@
 
 
 
+<h1>Latest Posts</h1>
 
- 
-  <ul class ="list-group">
+<ul class="list-group">
     @foreach (var post in Model)
     {
-        <li class="list-group-item d-flex justify-content-between align-items-left">
-            @if (!string.IsNullOrEmpty(post.url))
-            {
-               <a href="@post.url">@postNumber.@post.title</a>
-            }
-            else
-            {
-                <span>@postNumber.@post.title</span>
-            }
-            
-            <br />
-        <li class="list-group-item d-flex justify-align-content-between align-items-left">by @post.username posted @TimeHelper.TimeAgo(post.createdAt)  <a href="@Url.Action("ViewPost", "Post", new { id = post.postId })">@post.number_of_comments comments</a></li>
-
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                @if (!string.IsNullOrEmpty(post.url))
+                {
+                    <span>@postNumber.</span> <a href="@post.url"><strong>@post.title</strong></a>
+                }
+                else
+                {
+                    <span>@postNumber. @post.title</span>
+                }
+                <br />
+                Upvotes: <span id="upvotesCount_@post.postId">@post.upvotes</span>
+                <a href="javascript:void(0);" onclick="upvotePost(@post.postId)" style="text-decoration: none;">▲</a>
+                by @post.username posted @TimeHelper.TimeAgo(post.createdAt)
+            </div>
+            <div>
+                <span>
+                    <a href="@Url.Action("ViewPost", "Post", new { id = post.postId })" class="badge bg-light">
+                        @post.number_of_comments comments
+                    </a>
+                </span>
+                @if (User.Identity.IsAuthenticated && post.userToken == ViewBag.CurrentUserToken)
+                {
+                    <a href="@Url.Action("Edit", "Post", new { id = post.postId })" class="btn btn-sm btn-secondary ml-2">Edit</a>
+                    <a href="@Url.Action("Delete", "Post", new { id = post.postId })" class="btn btn-sm btn-danger ml-2">Delete</a>
+                }
+            </div>
         </li>
-        
-            postNumber++;
-        @if (User.Identity.IsAuthenticated && post.userToken == ViewBag.CurrentUserToken)
-        {
-            
-            <a href="@Url.Action("Edit", "Post", new { id = post.postId })">Edit</a>
-            <a href="@Url.Action("Delete","Post", new{id = post.postId})">Delete</a>
-        }
+        postNumber++;
     }
 </ul>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function upvotePost(postId) {
+            $.ajax({
+                url: '/Post/Upvote',
+                method: 'POST',
+                data: { postId: postId },
+                success: function (data) {
+                    $('#upvotesCount_' + postId).text(data.upvotes);
+                },
+                error: function () {
+                    console.log('An error occurred during upvoting.');
+                }
+            });
+        }
+    </script>
+}
+
+
+
+
+
+
+

@@ -150,5 +150,10 @@ namespace FirstProjectRepository.Repository
             return organizedComments;
         }
 
+        public void UpdateUpvotes(int postId, int upvotes)
+        {
+            var query = "UPDATE Posts SET Upvotes = @upvotes WHERE postId = @postId";
+            _connection.Execute(query, new { upvotes, postId });
+        }
     }
 }

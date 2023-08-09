@@ -142,6 +142,22 @@ namespace FirstProject___Test.Controllers
             var postWithComments = _postRepository.GetPostAndComments(id);
             return View(postWithComments);
         }
+        [HttpPost]
+        public IActionResult Upvote(int postId)
+        {
+            var post = _postRepository.GetPostById(postId);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            // Update the upvotes count
+            post.upvotes++;
+            _postRepository.UpdateUpvotes(postId, post.upvotes);
+
+            // Return updated upvotes count
+            return Json(new { upvotes = post.upvotes });
+        }
         private Guid GetCurrentUserToken()
         {
             var claim = HttpContext.User.Claims;

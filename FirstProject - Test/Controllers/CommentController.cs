@@ -1,4 +1,5 @@
-﻿using FirstProjectRepository.DBModels;
+﻿using FirstProject___Test.ViewModels;
+using FirstProjectRepository.DBModels;
 using FirstProjectRepository.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,16 @@ namespace FirstProject___Test.Controllers
             
             _commentRepository.InsertComment(newComment);
             return RedirectToAction("ViewPost", "Post", new { id = postId });
+        }
+        [HttpGet]
+        public IActionResult AddReply(int postId,int parentCommentId)
+        {
+            var ViewModel = new AddReplyViewModel
+            {
+                postId = postId,
+                parentCommentId = parentCommentId
+            };
+            return View(ViewModel);
         }
         [HttpPost]
         public IActionResult AddReply(int postId, int parentCommentId, string replyText)

@@ -14,5 +14,7 @@ namespace FirstProjectRepository.DBModels
         public string text { get; set; }
         public string? url { get; set; }
         public DateTime createdAt { get; set; }
+
+        public int upvotes { get; set; }
     }
 }
