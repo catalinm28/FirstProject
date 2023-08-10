@@ -14,13 +14,13 @@ namespace FirstProject___Test.Controllers
     {
         private readonly PostRepository _postRepository;
         private readonly UserRepository _userRepository;
-        //private readonly CommentRepository _commentRepository;
+        private readonly CommentRepository _commentRepository;
         
         public PostController(PostRepository postRepository,UserRepository userRepository, CommentRepository commentRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
-            //_commentRepository = commentRepository;
+            _commentRepository = commentRepository;
         }
         [AllowAnonymous]
         public IActionResult Index()
@@ -122,6 +122,7 @@ namespace FirstProject___Test.Controllers
             {
                 return NotFound();
             }
+            _commentRepository.DeleteCommentsByPostId(id);
 
             _postRepository.DeletePost(id);
 
@@ -139,17 +140,21 @@ namespace FirstProject___Test.Controllers
         public IActionResult ViewPost(int id)
         {
             ViewBag.CurrentUserToken = GetCurrentUserToken();
+           
             var postWithComments = _postRepository.GetPostAndComments(id);
             return View(postWithComments);
         }
         [HttpPost]
         public IActionResult Upvote(int postId)
         {
+            ;
             var post = _postRepository.GetPostById(postId);
             if (post == null)
             {
                 return NotFound();
             }
+
+
 
             // Update the upvotes count
             post.upvotes++;
@@ -157,6 +162,8 @@ namespace FirstProject___Test.Controllers
 
             // Return updated upvotes count
             return Json(new { upvotes = post.upvotes });
+
+
         }
         private Guid GetCurrentUserToken()
         {

@@ -11,8 +11,8 @@
 }
 
 <h3>Add Comment</h3>
-<form method="post" asp-action="AddComment" asp-controller="Comment" asp-route-postId="@Model.postId">
-    <textarea name="commentText" rows="4" cols="50" required></textarea>
+<form id="commentForm" method="post" asp-action="AddComment" asp-controller="Comment" asp-route-postId="@Model.postId">
+    <textarea id="commentText" name="commentText" rows="4" cols="50" required></textarea>
     <br />
     <button type="submit">Add Comment</button>
 </form>
@@ -24,16 +24,41 @@
 }
 else
 {
-    <ul>
+    <ul id="commentsList">
         @foreach (var comment in Model.comments)
         {
             @await Html.PartialAsync("_Replies", comment)
         }
     </ul>
 }
-}
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#commentForm").submit(function (event) {
+                event.preventDefault();
+                var commentText = $("#commentText").val();
+                var postId = @Model.postId; // Get the post ID from your Model
+                var authorUsername = $("#authorUsername").data("username");
+
+                $.ajax({
+                    url: "/Comment/AddComment", // Adjust the URL to your action method
+                    type: "POST",
+                    data: { postId: postId, commentText: commentText },
+                    success: function (result) {
+                        // Create the HTML for the new comment
+                        var commentHtml = '<li><strong>' + result.username + ':</strong> ' + result.text + '</li>';
+
+                        // Append the new comment HTML to the comments list
+                        $("#commentsList").append(commentHtml);
+                        $("#commentText").val(""); // Clear the comment input
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
 }

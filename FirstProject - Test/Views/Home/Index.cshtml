@@ -29,13 +29,25 @@
                     <span>@postNumber. @post.title</span>
                 }
                 <br />
-                Upvotes: <span id="upvotesCount_@post.postId">@post.upvotes</span>
-                <a href="javascript:void(0);" onclick="upvotePost(@post.postId)" style="text-decoration: none;">▲</a>
-                by @post.username posted @TimeHelper.TimeAgo(post.createdAt)
+                @if (User.Identity.IsAuthenticated)
+                {
+                <span>Upvotes: </span>
+                    <span id="upvotesCount_@post.postId">@post.upvotes</span>
+                    <a href="javascript:void(0);" onclick="upvotePost(@post.postId)" style="text-decoration: none;">▲</a>
+                    <span>by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
+                }
+                else
+                {
+                    
+                    <span>Upvotes: </span>
+                    <span id="upvotesCount_@post.postId">@post.upvotes</span>
+                    <span>▲ by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
+                }
+                
             </div>
             <div>
                 <span>
-                    <a href="@Url.Action("ViewPost", "Post", new { id = post.postId })" class="badge bg-light">
+                    <a href="@Url.Action("ViewPost", "Post", new { id = post.postId })" class="badge bg-light" style="text-decoration: none" >
                         @post.number_of_comments comments
                     </a>
                 </span>

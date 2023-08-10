@@ -25,9 +25,20 @@
             {
                 <span>@postNumber.@post.title</span>
             }
+            @if (User.Identity.IsAuthenticated)
+            {
+                <span>Upvotes: </span>
+                <span id="upvotesCount_@post.postId">@post.upvotes</span>
+                <a href="javascript:void(0);" onclick="upvotePost(@post.postId)" style="text-decoration: none;">▲</a>
+                <span>by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
+            }
+            else
+            {
 
-            <br />
-            by @post.username posted @TimeHelper.TimeAgo(post.createdAt) @post.number_of_comments comments
+                <span>Upvotes: </span>
+                <span id="upvotesCount_@post.postId">@post.upvotes</span>
+                <span>▲ by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
+            }
 
         </li>
 
@@ -35,3 +46,28 @@
         
     }
 </ul>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            $('#commentForm').submit(function (event) {
+                event.preventDefault(); // Prevent default form submission behavior
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr('AddComment'),
+                    method: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (data) {
+                        // Append the new comment directly to the comments section
+                        $('#commentsSection ul').append(data);
+                        form.trigger('reset'); // Clear the form
+                    },
+                    error: function () {
+                        console.log('An error occurred while adding the comment.');
+                    }
+                });
+            });
+        });
+    </script>
+}

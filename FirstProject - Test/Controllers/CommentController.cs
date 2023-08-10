@@ -33,7 +33,7 @@ namespace FirstProject___Test.Controllers
 
             
             _commentRepository.InsertComment(newComment);
-            return RedirectToAction("ViewPost", "Post", new { id = postId });
+            return Json(newComment);
         }
         [HttpGet]
         public IActionResult AddReply(int postId,int parentCommentId)

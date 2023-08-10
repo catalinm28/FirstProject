@@ -81,5 +81,11 @@ namespace FirstProjectRepository.Repository
 
 
         }
+        public void DeleteCommentsByPostId(int postId)
+        {
+            var query = "DELETE FROM Comments WHERE postId = @PostId";
+            _connection.Execute(query, new { postId = postId });
+            
+        }
     }
 }
