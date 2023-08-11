@@ -24,6 +24,7 @@ builder.Services.AddScoped<PostRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<CommentRepository>();
 builder.Services.AddScoped<Crypt>();
+builder.Services.AddScoped<VoteRepository>();
 
 
 

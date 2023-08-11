@@ -41,7 +41,7 @@ namespace FirstProject___Test.Controllers
                     comments = p.comments,
                     upvotes = p.upvotes
                 };
-
+                 
                 postHomeViewList.Add(postHomeView);
             }
             if (User.Identity.IsAuthenticated)

@@ -15,12 +15,15 @@ namespace FirstProject___Test.Controllers
         private readonly PostRepository _postRepository;
         private readonly UserRepository _userRepository;
         private readonly CommentRepository _commentRepository;
+        private readonly VoteRepository _voteRepository;
         
-        public PostController(PostRepository postRepository,UserRepository userRepository, CommentRepository commentRepository)
+        public PostController(PostRepository postRepository,UserRepository userRepository, CommentRepository commentRepository, 
+            VoteRepository voteRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
             _commentRepository = commentRepository;
+            _voteRepository = voteRepository;
         }
         [AllowAnonymous]
         public IActionResult Index()
@@ -147,23 +150,63 @@ namespace FirstProject___Test.Controllers
         [HttpPost]
         public IActionResult Upvote(int postId)
         {
-            ;
+            
             var post = _postRepository.GetPostById(postId);
             if (post == null)
             {
                 return NotFound();
             }
 
+            var userToken = GetCurrentUserToken();
+            if (_voteRepository.hasUserVoted(userToken, postId))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, "User already voted");
+            }
 
 
-            // Update the upvotes count
+            
             post.upvotes++;
             _postRepository.UpdateUpvotes(postId, post.upvotes);
 
-            // Return updated upvotes count
+            var vote = new Vote
+            {
+                userToken = userToken,
+                postId = postId
+            };
+            _voteRepository.AddVote(vote);
             return Json(new { upvotes = post.upvotes });
 
 
+        }
+        [HttpPost]
+
+        public IActionResult Downvote(int postId)
+        {
+            var userToken = GetCurrentUserToken();
+            var post = _postRepository.GetPostById(postId);
+            if(post== null)
+            {
+                return NoContent();
+            }
+            if (_voteRepository.hasUserVoted(userToken, postId))
+            {
+                _voteRepository.RemoveVote(userToken, postId);
+            }
+            else
+            {
+                var vote = new Vote
+                {
+                    userToken = userToken,
+                    postId = postId
+                };
+                _voteRepository.AddVote(vote);
+                
+                
+            }
+            var upvotes = _voteRepository.GetVoteCount(postId);
+            upvotes--;
+            post.upvotes = upvotes;
+            return Json(new { upvotes = post.upvotes });
         }
         private Guid GetCurrentUserToken()
         {
