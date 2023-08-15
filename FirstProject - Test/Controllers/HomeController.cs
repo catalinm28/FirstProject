@@ -39,7 +39,9 @@ namespace FirstProject___Test.Controllers
                     createdAt = p.createdAt,
                     number_of_comments = p.number_of_comments,
                     comments = p.comments,
-                    upvotes = p.upvotes
+                    upvotes = p.upvotes,
+                    downvotes = p.downvotes,
+                    votecount = p.votecount
                 };
                  
                 postHomeViewList.Add(postHomeView);

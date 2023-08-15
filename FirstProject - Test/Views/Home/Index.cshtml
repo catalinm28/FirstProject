@@ -7,17 +7,14 @@
     int postNumber = 1;
 }
 
-
-
 @model List<PostsHomeView>
-
-
 
 <h1>Latest Posts</h1>
 
 <ul class="list-group">
     @foreach (var post in Model)
     {
+        
         <li class="list-group-item d-flex justify-content-between align-items-center">
             <div>
                 @if (!string.IsNullOrEmpty(post.url))
@@ -31,23 +28,24 @@
                 <br />
                 @if (User.Identity.IsAuthenticated)
                 {
-                <span>Upvotes: </span>
-                    <span id="upvotesCount_@post.postId">@post.upvotes</span>
-                    <a href="javascript:void(0);" onclick="upvotePost(@post.postId)" style="text-decoration: none;">▲</a>
+                    <span>Score: </span>
+                    <span id="votes_@post.postId">@post.votecount</span>
+                    <a href="#" class="upvote-btn" data-post-id="@post.postId" style="text-decoration: none;">▲</a>
+
+                  
+                    <a href="#" class="downvote-btn" data-post-id="@post.postId" style="text-decoration: none;">▼</a>
                     <span>by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
                 }
                 else
                 {
-                    
-                    <span>Upvotes: </span>
-                    <span id="upvotesCount_@post.postId">@post.upvotes</span>
+                    <span>Score: </span>
+                    <span id="votes_@post.postId">@post.votecount</span>
                     <span>▲ by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
                 }
-                
             </div>
             <div>
                 <span>
-                    <a href="@Url.Action("ViewPost", "Post", new { id = post.postId })" class="badge bg-light" style="text-decoration: none" >
+                    <a href="@Url.Action("ViewPost", "Post", new { id = post.postId })" class="badge bg-light" style="text-decoration: none;">
                         @post.number_of_comments comments
                     </a>
                 </span>
@@ -65,25 +63,41 @@
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function upvotePost(postId) {
+        // JavaScript file
+
+        // Function to handle voting
+        function votePost(postId, voteType) {
             $.ajax({
-                url: '/Post/Upvote',
+                url: '/Post/' + voteType + 'vote',
                 method: 'POST',
                 data: { postId: postId },
                 success: function (data) {
-                    $('#upvotesCount_' + postId).text(data.upvotes);
+                    updateVoteCount(postId, data.votecount);
                 },
                 error: function () {
-                    console.log('An error occurred during upvoting.');
+                    console.log('An error occurred during voting.');
                 }
             });
         }
+
+        // Function to update vote count
+        function updateVoteCount(postId, voteCount) {
+            $('#votes_' + postId).text(voteCount);
+        }
+
+        // Event listener for upvote
+        $('.upvote-btn').on('click', function () {
+            var postId = $(this).data('post-id');
+            votePost(postId, 'up');
+        });
+
+        // Event listener for downvote
+        $('.downvote-btn').on('click', function () {
+            var postId = $(this).data('post-id');
+            votePost(postId, 'down');
+        });
+
     </script>
 }
-
-
-
-
-
 
 

@@ -155,5 +155,11 @@ namespace FirstProjectRepository.Repository
             var query = "UPDATE Posts SET Upvotes = @upvotes WHERE postId = @postId";
             _connection.Execute(query, new { upvotes, postId });
         }
+        public void UpdateDownvotes(int postId, int downvotes)
+        {
+            string sql = "UPDATE Posts SET Downvotes = @Downvotes WHERE postId = @PostId";
+            _connection.Execute(sql, new { Downvotes = downvotes, postId = postId });
+        }
+
     }
 }

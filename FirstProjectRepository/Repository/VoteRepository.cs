@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FirstProjectRepository.DBModels;
+using FirstProjectRepository.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,7 +34,8 @@ namespace FirstProjectRepository.Repository
             var parameters = new
             {
                 userToken = vote.userToken,
-                postId = vote.postId
+                postId = vote.postId,
+                voteType = vote.voteType
             };
             _connection.Execute(procedure,parameters, commandType: CommandType.StoredProcedure);
         }
@@ -44,10 +46,24 @@ namespace FirstProjectRepository.Repository
             int count = _connection.ExecuteScalar<int>(procedure, parameter, commandType: CommandType.StoredProcedure);
             return count;
         }
+   
+
 
         public void RemoveVote(Guid userToken, int postId)
         {
-            throw new NotImplementedException();
+            string sql = "DELETE FROM Votes WHERE userToken = @userToken AND PostId = @PostId";
+            _connection.Execute(sql, new { userToken = userToken, PostId = postId });
+        }
+        public void RemoveVotesByPostId(int postId)
+        {
+            string sql = "DELETE FROM Votes WHERE postId = @postId";
+            _connection.Execute(sql, new { postId = postId });
+        }
+        public int GetUserVoteType(Guid userToken, int postId)
+        {
+            string sql = "SELECT VoteType FROM Votes WHERE userToken = @userToken AND postId = @postId";
+            int voteType = _connection.ExecuteScalar<int>(sql, new { userToken = userToken, postId = postId });
+            return voteType;
         }
     }
 }

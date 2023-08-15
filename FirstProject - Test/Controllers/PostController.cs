@@ -7,6 +7,7 @@ using FirstProjectRepository.DBModels;
 using System.Drawing;
 using System.Security.Claims;
 using FirstProjectRepository.UsefullModels;
+using FirstProjectRepository.Helpers;
 
 namespace FirstProject___Test.Controllers
 {
@@ -126,6 +127,7 @@ namespace FirstProject___Test.Controllers
                 return NotFound();
             }
             _commentRepository.DeleteCommentsByPostId(id);
+            _voteRepository.RemoveVotesByPostId(id);
 
             _postRepository.DeletePost(id);
 
@@ -150,7 +152,6 @@ namespace FirstProject___Test.Controllers
         [HttpPost]
         public IActionResult Upvote(int postId)
         {
-            
             var post = _postRepository.GetPostById(postId);
             if (post == null)
             {
@@ -160,53 +161,78 @@ namespace FirstProject___Test.Controllers
             var userToken = GetCurrentUserToken();
             if (_voteRepository.hasUserVoted(userToken, postId))
             {
-                return StatusCode(StatusCodes.Status403Forbidden, "User already voted");
-            }
+                if (_voteRepository.GetUserVoteType(userToken, postId) == (int)VoteType.Upvote)
+                {
 
-
-            
-            post.upvotes++;
-            _postRepository.UpdateUpvotes(postId, post.upvotes);
-
-            var vote = new Vote
-            {
-                userToken = userToken,
-                postId = postId
-            };
-            _voteRepository.AddVote(vote);
-            return Json(new { upvotes = post.upvotes });
-
-
-        }
-        [HttpPost]
-
-        public IActionResult Downvote(int postId)
-        {
-            var userToken = GetCurrentUserToken();
-            var post = _postRepository.GetPostById(postId);
-            if(post== null)
-            {
-                return NoContent();
-            }
-            if (_voteRepository.hasUserVoted(userToken, postId))
-            {
-                _voteRepository.RemoveVote(userToken, postId);
+                    post.upvotes--;
+                    _postRepository.UpdateUpvotes(postId, post.upvotes);
+                    _voteRepository.RemoveVote(userToken, postId);
+                }
+                else
+                {
+                    post.downvotes--;
+                    _postRepository.UpdateDownvotes(postId, post.downvotes);
+                    _voteRepository.RemoveVote(userToken, postId);
+                }
             }
             else
             {
+                // User hasn't voted, so add the upvote
+                post.upvotes++;
+                _postRepository.UpdateUpvotes(postId, post.upvotes);
                 var vote = new Vote
                 {
                     userToken = userToken,
-                    postId = postId
+                    postId = postId,
+                    voteType = VoteType.Upvote
                 };
                 _voteRepository.AddVote(vote);
-                
-                
             }
-            var upvotes = _voteRepository.GetVoteCount(postId);
-            upvotes--;
-            post.upvotes = upvotes;
-            return Json(new { upvotes = post.upvotes });
+            int votecount = post.upvotes - post.downvotes;
+            return Json(new { votecount = votecount });
+        }
+
+        [HttpPost]
+        public IActionResult Downvote(int postId)
+        {
+            var post = _postRepository.GetPostById(postId);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            var userToken = GetCurrentUserToken();
+            if (_voteRepository.hasUserVoted(userToken, postId))
+            {
+                if (_voteRepository.GetUserVoteType(userToken, postId) == (int)VoteType.Downvote)
+                {
+                    post.downvotes--;
+                    _postRepository.UpdateDownvotes(postId, post.downvotes);
+                    _voteRepository.RemoveVote(userToken, postId);
+                }
+                else
+                {
+                    post.upvotes--;
+                    _postRepository.UpdateUpvotes(postId, post.upvotes);
+                    _voteRepository.RemoveVote(userToken, postId);
+                }
+            }
+            else
+            {
+                // User hasn't voted, so add the downvote
+                post.downvotes++;
+                _postRepository.UpdateDownvotes(postId, post.downvotes);
+                var vote = new Vote
+                {
+                    userToken = userToken,
+                    postId = postId,
+                    voteType = VoteType.Downvote
+                };
+                _voteRepository.AddVote(vote);
+            }
+            int votecount = post.upvotes - post.downvotes;
+
+            return Json(new { votecount = votecount });
         }
         private Guid GetCurrentUserToken()
         {
@@ -219,4 +245,52 @@ namespace FirstProject___Test.Controllers
             return Guid.Empty;
         }
     }
+
 }
+
+/*[HttpPost]
+public IActionResult Downvote(int postId)
+{
+    var post = _postRepository.GetPostById(postId);
+    if (post == null)
+    {
+        return NotFound();
+    }
+
+    var userToken = GetCurrentUserToken();
+    if (_voteRepository.hasUserVoted(userToken, postId))
+    {
+        // User has already voted
+        if (_voteRepository.GetUserVoteType(userToken, postId) == VoteType.Upvote)
+        {
+            // Remove the upvote
+            post.upvotes--;
+            _postRepository.UpdateUpvotes(postId, post.upvotes);
+        }
+        else
+        {
+            // Remove the downvote
+            post.downvotes--;
+            _postRepository.UpdateDownvotes(postId, post.downvotes);
+        }
+
+        _voteRepository.RemoveVote(userToken, postId);
+    }
+    else
+    {
+        // User hasn't voted, so add the downvote
+        post.downvotes++;
+        _postRepository.UpdateDownvotes(postId, post.downvotes);
+
+        var vote = new Vote
+        {
+            userToken = userToken,
+            postId = postId,
+            voteType = VoteType.Downvote
+        };
+        _voteRepository.AddVote(vote);
+    }
+
+    return Json(new { downvotes = post.downvotes });
+}
+*/

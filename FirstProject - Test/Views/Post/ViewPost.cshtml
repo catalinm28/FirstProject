@@ -39,11 +39,11 @@ else
             $("#commentForm").submit(function (event) {
                 event.preventDefault();
                 var commentText = $("#commentText").val();
-                var postId = @Model.postId; // Get the post ID from your Model
+                var postId = @Model.postId; 
                 var authorUsername = $("#authorUsername").data("username");
 
                 $.ajax({
-                    url: "/Comment/AddComment", // Adjust the URL to your action method
+                    url: "/Comment/AddComment", 
                     type: "POST",
                     data: { postId: postId, commentText: commentText },
                     success: function (result) {

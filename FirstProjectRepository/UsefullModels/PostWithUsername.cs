@@ -21,5 +21,9 @@ namespace FirstProjectRepository.UsefullModels
         public List<CommentWithReplies> comments { get; set; }
 
         public int upvotes { get; set; }
+
+        public int downvotes { get; set; }
+
+        public int votecount { get; set; }
     }
 }

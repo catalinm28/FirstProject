@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FirstProjectRepository.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ namespace FirstProjectRepository.DBModels
     {
         public int VoteId { get; set; }
         public Guid userToken { get; set; }
-        public int postId { get; set; } 
+        public int postId { get; set; }
+        
+        public VoteType voteType { get; set; }
     }
 }
