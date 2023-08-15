@@ -1,6 +1,8 @@
-﻿using FirstProject___Test.ViewModels;
+﻿using FirstProject___Test.Helpful;
+using FirstProject___Test.ViewModels;
 using FirstProjectRepository.DBModels;
 using FirstProjectRepository.Repository;
+using FirstProjectRepository.UsefullModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -11,16 +13,18 @@ namespace FirstProject___Test.Controllers
     public class CommentController : Controller
     {
         private readonly CommentRepository _commentRepository;
-        public CommentController(CommentRepository commentRepository)
+        private readonly UserRepository _userRepository;
+        public CommentController(CommentRepository commentRepository, UserRepository userRepository)
         {
             _commentRepository = commentRepository;
+            _userRepository = userRepository;
         }   
 
         [HttpPost]
         public IActionResult AddComment(int postId, string commentText)
         {
             
-            Guid userToken = GetCurrentUserToken();
+            Guid userToken = UserTokenHelper.GetCurrentUserToken(HttpContext);
 
             
             Comment newComment = new Comment
@@ -31,9 +35,14 @@ namespace FirstProject___Test.Controllers
                 createdAt = DateTime.UtcNow
             };
 
-            
+            string username;
             _commentRepository.InsertComment(newComment);
-            return Json(newComment);
+            User user = _userRepository.GetUserByUserToken(userToken);
+            if (user == null) username = "anonim";
+            else username = user.username;
+            
+            return Json(new {username = username,text = newComment.text,createdAt = TimeHelper.TimeAgo(newComment.createdAt)});
+
         }
         [HttpGet]
         public IActionResult AddReply(int postId,int parentCommentId)
@@ -49,7 +58,7 @@ namespace FirstProject___Test.Controllers
         public IActionResult AddReply(int postId, int parentCommentId, string replyText)
         {
             
-            Guid userToken = GetCurrentUserToken();
+            Guid userToken = UserTokenHelper.GetCurrentUserToken(HttpContext);
 
             
             var reply = new Comment
@@ -63,7 +72,6 @@ namespace FirstProject___Test.Controllers
 
             
             _commentRepository.InsertComment(reply);
-
             
             return RedirectToAction("ViewPost","Post", new { id = postId });
         }
@@ -71,7 +79,7 @@ namespace FirstProject___Test.Controllers
         {
             var comment = _commentRepository.GetCommentById(commentId);
 
-            if (comment == null|| comment.userToken!=GetCurrentUserToken())
+            if (comment == null|| comment.userToken!=UserTokenHelper.GetCurrentUserToken(HttpContext))
             {
                 return NotFound();
             }
@@ -86,7 +94,7 @@ namespace FirstProject___Test.Controllers
         {
             var comment = _commentRepository.GetCommentById(commentId);
 
-            if (comment == null || comment.userToken != GetCurrentUserToken())
+            if (comment == null || comment.userToken != UserTokenHelper.GetCurrentUserToken(HttpContext))
             {
                 return NotFound();
             }
@@ -105,7 +113,7 @@ namespace FirstProject___Test.Controllers
         {
             var comment = _commentRepository.GetCommentById(commentId);
 
-            if (comment == null || comment.userToken != GetCurrentUserToken())
+            if (comment == null || comment.userToken != UserTokenHelper.GetCurrentUserToken(HttpContext))
             {
                 return NotFound();
             }
@@ -118,7 +126,7 @@ namespace FirstProject___Test.Controllers
         {
             var comment = _commentRepository.GetCommentById(commentId);
 
-            if (comment == null || comment.userToken != GetCurrentUserToken())
+            if (comment == null || comment.userToken != UserTokenHelper.GetCurrentUserToken(HttpContext))
             {
                 return NotFound();
             }
@@ -127,15 +135,6 @@ namespace FirstProject___Test.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-        private Guid GetCurrentUserToken()
-        {
-            var claim = HttpContext.User.Claims;
-            var userTokenClaim = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userTokenClaim != null && Guid.TryParse(userTokenClaim.Value, out Guid userToken))
-            {
-                return userToken;
-            }
-            return Guid.Empty;
-        }
+    
     }
 }

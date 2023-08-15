@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Security.Claims;
 using FirstProjectRepository.UsefullModels;
 using FirstProjectRepository.Helpers;
+using FirstProject___Test.Helpful;
 
 namespace FirstProject___Test.Controllers
 {
@@ -43,7 +44,7 @@ namespace FirstProject___Test.Controllers
 
             if (ModelState.IsValid)
             {
-                post.userToken = GetCurrentUserToken();
+                post.userToken = UserTokenHelper.GetCurrentUserToken(HttpContext);
                 post.createdAt = DateTime.UtcNow;
 
                 
@@ -61,7 +62,7 @@ namespace FirstProject___Test.Controllers
             var post = _postRepository.GetPostById(id);
 
             
-            if (post == null || post.userToken != GetCurrentUserToken())
+            if (post == null || post.userToken != UserTokenHelper.GetCurrentUserToken(HttpContext))
             {
                 return NotFound(); 
             }
@@ -78,7 +79,7 @@ namespace FirstProject___Test.Controllers
             var existingPost = _postRepository.GetPostById(id);
 
             
-            if (existingPost == null || existingPost.userToken != GetCurrentUserToken())
+            if (existingPost == null || existingPost.userToken != UserTokenHelper.GetCurrentUserToken(HttpContext))
             {
                 return NotFound();
             }
@@ -109,7 +110,7 @@ namespace FirstProject___Test.Controllers
         {
             var post = _postRepository.GetPostById(id);
 
-            if (post == null || post.userToken != GetCurrentUserToken())
+            if (post == null || post.userToken != UserTokenHelper.GetCurrentUserToken(HttpContext))
             {
                 return NotFound();
             }
@@ -122,7 +123,7 @@ namespace FirstProject___Test.Controllers
         {
             var post = _postRepository.GetPostById(id);
 
-            if (post == null || post.userToken != GetCurrentUserToken())
+            if (post == null || post.userToken != UserTokenHelper.GetCurrentUserToken(HttpContext))
             {
                 return NotFound();
             }
@@ -137,14 +138,14 @@ namespace FirstProject___Test.Controllers
         [Authorize]
         public IActionResult MyPosts()
         {
-            var userToken = GetCurrentUserToken();
+            var userToken = UserTokenHelper.GetCurrentUserToken(HttpContext);
             var posts = _postRepository.GetPostByUserId(userToken);
             return View(posts);
         }
         [AllowAnonymous]
         public IActionResult ViewPost(int id)
         {
-            ViewBag.CurrentUserToken = GetCurrentUserToken();
+            ViewBag.CurrentUserToken = UserTokenHelper.GetCurrentUserToken(HttpContext);
            
             var postWithComments = _postRepository.GetPostAndComments(id);
             return View(postWithComments);
@@ -158,7 +159,7 @@ namespace FirstProject___Test.Controllers
                 return NotFound();
             }
 
-            var userToken = GetCurrentUserToken();
+            var userToken = UserTokenHelper.GetCurrentUserToken(HttpContext);
             if (_voteRepository.hasUserVoted(userToken, postId))
             {
                 if (_voteRepository.GetUserVoteType(userToken, postId) == (int)VoteType.Upvote)
@@ -177,7 +178,7 @@ namespace FirstProject___Test.Controllers
             }
             else
             {
-                // User hasn't voted, so add the upvote
+                
                 post.upvotes++;
                 _postRepository.UpdateUpvotes(postId, post.upvotes);
                 var vote = new Vote
@@ -201,7 +202,7 @@ namespace FirstProject___Test.Controllers
                 return NotFound();
             }
 
-            var userToken = GetCurrentUserToken();
+            var userToken = UserTokenHelper.GetCurrentUserToken(HttpContext);
             if (_voteRepository.hasUserVoted(userToken, postId))
             {
                 if (_voteRepository.GetUserVoteType(userToken, postId) == (int)VoteType.Downvote)
@@ -219,7 +220,7 @@ namespace FirstProject___Test.Controllers
             }
             else
             {
-                // User hasn't voted, so add the downvote
+            
                 post.downvotes++;
                 _postRepository.UpdateDownvotes(postId, post.downvotes);
                 var vote = new Vote
@@ -234,63 +235,6 @@ namespace FirstProject___Test.Controllers
 
             return Json(new { votecount = votecount });
         }
-        private Guid GetCurrentUserToken()
-        {
-            var claim = HttpContext.User.Claims;
-            var userTokenClaim = claim.FirstOrDefault(c=>c.Type==ClaimTypes.NameIdentifier);
-            if(userTokenClaim != null&& Guid.TryParse(userTokenClaim.Value,out Guid userToken))
-            {
-                return userToken;
-            }
-            return Guid.Empty;
-        }
     }
 
 }
-
-/*[HttpPost]
-public IActionResult Downvote(int postId)
-{
-    var post = _postRepository.GetPostById(postId);
-    if (post == null)
-    {
-        return NotFound();
-    }
-
-    var userToken = GetCurrentUserToken();
-    if (_voteRepository.hasUserVoted(userToken, postId))
-    {
-        // User has already voted
-        if (_voteRepository.GetUserVoteType(userToken, postId) == VoteType.Upvote)
-        {
-            // Remove the upvote
-            post.upvotes--;
-            _postRepository.UpdateUpvotes(postId, post.upvotes);
-        }
-        else
-        {
-            // Remove the downvote
-            post.downvotes--;
-            _postRepository.UpdateDownvotes(postId, post.downvotes);
-        }
-
-        _voteRepository.RemoveVote(userToken, postId);
-    }
-    else
-    {
-        // User hasn't voted, so add the downvote
-        post.downvotes++;
-        _postRepository.UpdateDownvotes(postId, post.downvotes);
-
-        var vote = new Vote
-        {
-            userToken = userToken,
-            postId = postId,
-            voteType = VoteType.Downvote
-        };
-        _voteRepository.AddVote(vote);
-    }
-
-    return Json(new { downvotes = post.downvotes });
-}
-*/

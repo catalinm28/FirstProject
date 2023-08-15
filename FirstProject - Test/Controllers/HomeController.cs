@@ -1,4 +1,5 @@
-﻿using FirstProject___Test.Models;
+﻿using FirstProject___Test.Helpful;
+using FirstProject___Test.Models;
 using FirstProject___Test.ViewModels;
 using FirstProjectRepository.Repository;
 using FirstProjectRepository.UsefullModels;
@@ -49,7 +50,7 @@ namespace FirstProject___Test.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 
-                var currentUserToken = GetCurrentUserToken();
+                var currentUserToken = UserTokenHelper.GetCurrentUserToken(HttpContext);
 
                 
                 ViewBag.CurrentUserToken = currentUserToken;
@@ -67,15 +68,6 @@ namespace FirstProject___Test.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        private Guid GetCurrentUserToken()
-        {
-            var claim = HttpContext.User.Claims;
-            var userTokenClaim = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            if (userTokenClaim != null && Guid.TryParse(userTokenClaim.Value, out Guid userToken))
-            {
-                return userToken;
-            }
-            return Guid.Empty;
-        }
+     
     }
 }

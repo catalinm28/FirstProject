@@ -79,6 +79,7 @@ namespace FirstProjectRepository.Repository
             var parameters = new {userToken = userToken};
             _connection.Execute(procedureName, parameters, commandType: CommandType.StoredProcedure);
         }
+        
     }
 
 }

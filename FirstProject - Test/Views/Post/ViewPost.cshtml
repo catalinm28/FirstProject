@@ -35,24 +35,34 @@ else
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // Document ready handler
         $(document).ready(function () {
+            // Form submission handler
             $("#commentForm").submit(function (event) {
-                event.preventDefault();
-                var commentText = $("#commentText").val();
-                var postId = @Model.postId; 
-                var authorUsername = $("#authorUsername").data("username");
+                event.preventDefault(); // Prevent form submission
 
+                // Extract form data
+                var commentText = $("#commentText").val();
+                var postId = @Html.Raw(Json.Serialize(Model.postId));
+
+                // AJAX request
                 $.ajax({
-                    url: "/Comment/AddComment", 
+                    url: "/Comment/AddComment",
                     type: "POST",
                     data: { postId: postId, commentText: commentText },
                     success: function (result) {
                         // Create the HTML for the new comment
-                        var commentHtml = '<li><strong>' + result.username + ':</strong> ' + result.text + '</li>';
+                        var commentHtml = '<li>';
+                        commentHtml += '<strong>' + result.username + '</strong>'+" ";
+                        commentHtml += '<span class="comment-time">' + result.createdAt + '</span>';
+                        commentHtml += '<p>' + result.text + '</p>';
+                        commentHtml += '</li>';
 
                         // Append the new comment HTML to the comments list
                         $("#commentsList").append(commentHtml);
-                        $("#commentText").val(""); // Clear the comment input
+
+                        // Clear the comment input
+                        $("#commentText").val("");
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
@@ -62,3 +72,7 @@ else
         });
     </script>
 }
+
+
+
+
