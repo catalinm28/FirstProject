@@ -152,13 +152,17 @@ namespace FirstProjectRepository.Repository
 
         public void UpdateUpvotes(int postId, int upvotes)
         {
-            var query = "UPDATE Posts SET Upvotes = @upvotes WHERE postId = @postId";
-            _connection.Execute(query, new { upvotes, postId });
+            string procedureName = "UpdateUpvotes";
+            var parameters = new { postId = postId, upvotes = upvotes };
+            
+            _connection.Execute(procedureName,parameters, commandType: CommandType.StoredProcedure);
         }
         public void UpdateDownvotes(int postId, int downvotes)
         {
-            string sql = "UPDATE Posts SET Downvotes = @Downvotes WHERE postId = @PostId";
-            _connection.Execute(sql, new { Downvotes = downvotes, postId = postId });
+            string procedureName = "UpdateDownvotes";
+            var parameters = new {postId = postId, downvotes = downvotes };
+            
+            _connection.Execute(procedureName, parameters,commandType: CommandType.StoredProcedure);
         }
 
     }

@@ -1,30 +1,41 @@
 ﻿@model FirstProjectRepository.DBModels.Post
 
-
 <html>
-    <head>
-        <title Add new post></title>
-    </head>
-    <body>
-        <div>
-            <h2>Add New Post</h2>
-        @using (Html.BeginForm("Add", "Post", FormMethod.Post))
+<head>
+    <title>Add New Post</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Add New Post</h2>
+        @using (Html.BeginForm("Add", "Post", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
         {
             @Html.AntiForgeryToken()
-            <div>@Html.LabelFor(m=>m.title)
-                @Html.TextBoxFor(m=>m.title)
-            </div>
-            <div>@Html.LabelFor(m=>m.url)
-                 @Html.TextBoxFor(m=>m.url)
-            </div>
-            <div>@Html.LabelFor(m=>m.text)
-                @Html.TextAreaFor(m=>m.text, new{rows = 4})
-            </div>
-            <div>
-                <input type ="submit" value="Add Post"/>
-                </div>
-        }
-        </div>
-    </body>
-</html>
 
+            <div class="form-group">
+                @Html.LabelFor(m => m.title)
+                @Html.TextBoxFor(m => m.title, new { @class = "form-control", required = "required" })
+                <div class="invalid-feedback">
+                    Please enter a title.
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.url)
+                @Html.TextBoxFor(m => m.url, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.text)
+                @Html.TextAreaFor(m => m.text, new { @class = "form-control", rows = 4, required = "required" })
+                <div class="invalid-feedback">
+                    Please enter a post text.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Add Post</button>
+            </div>
+        }
+    </div>
+</body>
+</html>

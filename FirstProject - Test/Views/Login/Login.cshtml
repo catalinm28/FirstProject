@@ -1,0 +1,40 @@
+﻿@model FirstProject___Test.Models.LoginModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2>Login</h2>
+                @using (Html.BeginForm("Login", "Login", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group mb-3">
+                        <label class="col-form-label mt-4" for="Username">Username</label>
+                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", id = "Username" })
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="col-form-label mt-4" for="Password">Password</label>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", id = "Password" })
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                {
+                    <div class="alert alert-danger mt-3">
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

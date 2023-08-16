@@ -43,7 +43,7 @@ namespace FirstProject___Test.Controllers
                         password = _crypt.ComputeHash(model.Password)
                     };
                     _userRepository.InsertUser(newUser);
-                    return RedirectToAction("Index","Login");
+                    return RedirectToAction("Login","Login");
                    
                 }
             }

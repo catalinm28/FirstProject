@@ -51,18 +51,23 @@ namespace FirstProjectRepository.Repository
 
         public void RemoveVote(Guid userToken, int postId)
         {
-            string sql = "DELETE FROM Votes WHERE userToken = @userToken AND PostId = @PostId";
-            _connection.Execute(sql, new { userToken = userToken, PostId = postId });
+            string procedureName = "RemoveVote";
+            var parameters = new {userToken =  userToken, postId = postId};
+           
+            _connection.Execute(procedureName, parameters, commandType: CommandType.StoredProcedure);
         }
         public void RemoveVotesByPostId(int postId)
         {
-            string sql = "DELETE FROM Votes WHERE postId = @postId";
-            _connection.Execute(sql, new { postId = postId });
+            string procedureName = "RemoveVoteByPostId";
+            var parameters = new {postId = postId};
+          
+            _connection.Execute(procedureName,parameters, commandType: CommandType.StoredProcedure);
         }
         public int GetUserVoteType(Guid userToken, int postId)
         {
-            string sql = "SELECT VoteType FROM Votes WHERE userToken = @userToken AND postId = @postId";
-            int voteType = _connection.ExecuteScalar<int>(sql, new { userToken = userToken, postId = postId });
+            string procedureName = "GetUserVoteType";
+            var parameters = new { userToken = userToken, postId = postId };
+            int voteType = _connection.ExecuteScalar<int>(procedureName,parameters,commandType: CommandType.StoredProcedure);
             return voteType;
         }
     }

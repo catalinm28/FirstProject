@@ -26,12 +26,12 @@ namespace FirstProject___Test.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Login()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Index(string username, string password)
+        public IActionResult Login(string username, string password)
         {
             var user = _userRepository.GetUserByUsername(username);
             if (user == null || !VerifyPassword(password, user.password))

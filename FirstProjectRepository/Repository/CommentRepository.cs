@@ -83,8 +83,9 @@ namespace FirstProjectRepository.Repository
         }
         public void DeleteCommentsByPostId(int postId)
         {
-            var query = "DELETE FROM Comments WHERE postId = @PostId";
-            _connection.Execute(query, new { postId = postId });
+            string procedureName = "DeleteCommentsByPostId";
+            var parameter = new { postId = postId };
+            _connection.Execute(procedureName, parameter, commandType: CommandType.StoredProcedure);
             
         }
     }

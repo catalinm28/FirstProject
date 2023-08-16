@@ -19,28 +19,28 @@
             <div>
                 @if (!string.IsNullOrEmpty(post.url))
                 {
-                    <span>@postNumber.</span> <a href="@post.url"><strong>@post.title</strong></a>
+                    <span>@postNumber.</span> <a href="@post.url" class="h5"><strong>@post.title</strong></a>
                 }
                 else
                 {
-                    <span>@postNumber. @post.title</span>
+                    <span>@postNumber.</span> <strong>@post.title</strong>
                 }
                 <br />
                 @if (User.Identity.IsAuthenticated)
                 {
                     <span>Score: </span>
                     <span id="votes_@post.postId">@post.votecount</span>
-                    <a href="#" class="upvote-btn" data-post-id="@post.postId" style="text-decoration: none;">▲</a>
+                    <a href="#" class="upvote-btn" data-post-id="@post.postId" style="text-decoration: none;">☝️</a>
 
-                  
-                    <a href="#" class="downvote-btn" data-post-id="@post.postId" style="text-decoration: none;">▼</a>
+
+                    <a href="#" class="downvote-btn" data-post-id="@post.postId" style="text-decoration: none;">👇</a>
                     <span>by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
                 }
                 else
                 {
                     <span>Score: </span>
                     <span id="votes_@post.postId">@post.votecount</span>
-                    <span>▲ by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
+                    <span>☝️ by @post.username posted @TimeHelper.TimeAgo(post.createdAt)</span>
                 }
             </div>
             <div>
